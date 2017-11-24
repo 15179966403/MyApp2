@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">账号管理器</string>
+    <string name="message_pingtai_label">平台名称</string>
+    <string name="message_pingtai_hint">请输入平台名称</string>
+    <string name="message_username_label">用户名称</string>
+    <string name="message_username_hint">请输入该平台您使用的用户名</string>
+    <string name="message_user_label">账号</string>
+    <string name="message_user_hint">请输入账号</string>
+    <string name="message_password_label">密码</string>
+    <string name="message_password_hint">请输入密码</string>
+    <string name="message_email_label">邮箱</string>
+    <string name="message_email_hint">请输入绑定的邮箱</string>
+    <string name="message_phone_label">手机号</string>
+    <string name="new_message">添加</string>
+    <string name="message_ok">完成</string>
+    <string name="message_delete">删除</string>
+    <string name="add_message_is_empty">点击空白处添加一条信息</string>
+    <string name="message_edit">编辑</string>
+</resources>

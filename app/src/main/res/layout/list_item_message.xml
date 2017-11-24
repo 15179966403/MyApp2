@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/message_image_view"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:contentDescription="是否常用平台" />
+
+    <TextView
+        android:id="@+id/message_pingtai"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/message_pingtai_label"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/message_image_view"
+        app:layout_constraintTop_toTopOf="@+id/message_image_view" />
+
+    <TextView
+        android:id="@+id/message_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/message_username_label"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/message_image_view"
+        app:layout_constraintEnd_toEndOf="@+id/message_pingtai"
+        app:layout_constraintStart_toStartOf="@+id/message_pingtai" />
+</android.support.constraint.ConstraintLayout>
