@@ -16,4 +16,5 @@
     <string name="message_delete">删除</string>
     <string name="add_message_is_empty">点击空白处添加一条信息</string>
     <string name="message_edit">编辑</string>
+    <string name="message_phone_hint">请输入绑定的手机号</string>
 </resources>

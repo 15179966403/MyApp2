@@ -28,6 +28,8 @@ public class ListViewFragment extends Fragment{
     private RecyclerView mMessageRecyclerView;      //列表视图
     private MessageAdapter mAdapter;                //列表的适配器
 
+    private int mItemPosition=0;       //实现定点刷新
+
     //使用单例模式创建Fragment
     public static ListViewFragment newInstance(){
         return new ListViewFragment();
@@ -97,7 +99,7 @@ public class ListViewFragment extends Fragment{
             mMessageRecyclerView.setAdapter(mAdapter);      //为列表设置适配器
         }else{
             mAdapter.setMessages(messages);
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(mItemPosition);
         }
 
         showSubtitle();
@@ -110,6 +112,8 @@ public class ListViewFragment extends Fragment{
 
         private UserMessage mUserMessage;
 
+        private int mPosition;
+
         private TextView mPingTaiTextView;
         private TextView mUserNameTextView;
 
@@ -121,15 +125,18 @@ public class ListViewFragment extends Fragment{
             itemView.setOnClickListener(this);
         }
 
-        public void bindMessage(UserMessage message){
+        public void bindMessage(UserMessage message,int position){
             mUserMessage=message;
+            mPosition=position;
             mPingTaiTextView.setText(mUserMessage.getPingtai());
             mUserNameTextView.setText(mUserMessage.getUserName());
         }
 
         @Override
         public void onClick(View view) {
+            // TODO: 2017/11/26 当点击时，用户可选择三种情况进行填写，手机号码就是账号，或者邮箱就是账号，或者两种情况都不是
             Intent intent=MessageActivity.newIntent(getActivity(),mUserMessage.getId(),false);
+            mItemPosition=mPosition;
             startActivity(intent);
         }
     }
@@ -177,7 +184,7 @@ public class ListViewFragment extends Fragment{
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof MessageHolder) {
                 UserMessage message=mMessages.get(position);
-                ((MessageHolder) holder).bindMessage(message);
+                ((MessageHolder) holder).bindMessage(message,position);
             }
         }
 
