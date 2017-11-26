@@ -21,13 +21,15 @@ import java.util.UUID;
 
 public class MessagePagerActivity extends AppCompatActivity {
     private static final String EXTRA_MESSAGE_ID="com.hrc.myapp.message_id";
+    private static final String EXTRA_MESSAGE_IS_NEW="com.hrc.myapp.message_isnew";
 
     private ViewPager mViewPager;
     private List<UserMessage> mMessages;
 
-    public static Intent newIntent(Context packageContext, UUID messageid){
+    public static Intent newIntent(Context packageContext, UUID messageid,boolean isFirstNew){
         Intent intent=new Intent(packageContext,MessagePagerActivity.class);
         intent.putExtra(EXTRA_MESSAGE_ID,messageid);
+        intent.putExtra(EXTRA_MESSAGE_IS_NEW,isFirstNew);
         return intent;
     }
 
@@ -37,6 +39,7 @@ public class MessagePagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_pager);
 
         UUID messageId= (UUID) getIntent().getSerializableExtra(EXTRA_MESSAGE_ID);
+        final boolean isFirstNew= (boolean) getIntent().getSerializableExtra(EXTRA_MESSAGE_IS_NEW);
 
         mViewPager=findViewById(R.id.activity_messager_pager_view_pager);
 
@@ -46,7 +49,7 @@ public class MessagePagerActivity extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 UserMessage message=mMessages.get(position);
-                return MessageFragment.newInstance(message.getId());
+                return MessageFragment.newInstance(message.getId(),isFirstNew);
             }
 
             @Override

@@ -70,7 +70,7 @@ public class ListViewFragment extends Fragment{
             case R.id.menu_item_new_message:
                 UserMessage message=new UserMessage();
                 MessageLab.get(getActivity()).addMessage(message);
-                Intent intent=MessagePagerActivity.newIntent(getActivity(),message.getId());
+                Intent intent=MessageActivity.newIntent(getActivity(),message.getId(),true);
                 startActivity(intent);
                 return true;
             default:
@@ -129,7 +129,7 @@ public class ListViewFragment extends Fragment{
 
         @Override
         public void onClick(View view) {
-            Intent intent=MessagePagerActivity.newIntent(getActivity(),mUserMessage.getId());
+            Intent intent=MessageActivity.newIntent(getActivity(),mUserMessage.getId(),false);
             startActivity(intent);
         }
     }
@@ -145,7 +145,7 @@ public class ListViewFragment extends Fragment{
         public void onClick(View view) {
             UserMessage message=new UserMessage();
             MessageLab.get(getActivity()).addMessage(message);
-            Intent intent=MessagePagerActivity.newIntent(getActivity(),message.getId());
+            Intent intent=MessageActivity.newIntent(getActivity(),message.getId(),true);
             startActivity(intent);
         }
     }

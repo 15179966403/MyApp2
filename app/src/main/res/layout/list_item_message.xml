@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,10 +19,14 @@
 
     <TextView
         android:id="@+id/message_pingtai"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="6"
+        android:singleLine="true"
         android:text="@string/message_pingtai_label"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,13 +36,18 @@
 
     <TextView
         android:id="@+id/message_user_name"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="6"
+        android:singleLine="true"
         android:text="@string/message_username_label"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@+id/message_image_view"
         app:layout_constraintEnd_toEndOf="@+id/message_pingtai"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/message_pingtai" />
 </android.support.constraint.ConstraintLayout>

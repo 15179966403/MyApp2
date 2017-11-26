@@ -3,6 +3,7 @@ package com.example.myapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +21,14 @@ import java.util.UUID;
  */
 
 public class MessageFragment extends Fragment{
+    private static final String TAG="MessageFragment";
+
     private static final String ARG_MESSAGE_ID="message_id";
+    private static final String ARG_MESSAGE_IS_NEW="message_is_new";
 
     private UserMessage mUserMessage;
+    private UUID messageId;
+    private boolean IsFirstNew;     //是否是第一次创建
 
     private EditText mPingTai;
     private EditText mUserName;
@@ -33,9 +39,10 @@ public class MessageFragment extends Fragment{
 
     private Button okButton;
 
-    public static MessageFragment newInstance(UUID messageId){
+    public static MessageFragment newInstance(UUID messageId,boolean isFirstNew){
         Bundle args=new Bundle();
         args.putSerializable(ARG_MESSAGE_ID,messageId);
+        args.putSerializable(ARG_MESSAGE_IS_NEW,isFirstNew);
 
         MessageFragment fragment=new MessageFragment();
         fragment.setArguments(args);
@@ -46,7 +53,9 @@ public class MessageFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID messageId=(UUID)getArguments().getSerializable(ARG_MESSAGE_ID);
+        messageId=(UUID)getArguments().getSerializable(ARG_MESSAGE_ID);
+        IsFirstNew= (boolean) getArguments().getSerializable(ARG_MESSAGE_IS_NEW);
+        Log.d(TAG,"isFirstNew :"+IsFirstNew);
         mUserMessage=MessageLab.get(getActivity()).getMessage(messageId);
         setHasOptionsMenu(true);
     }
@@ -54,7 +63,9 @@ public class MessageFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        MessageLab.get(getActivity()).updateMessage(mUserMessage);
+        if (MessageLab.get(getActivity()).getMessage(messageId)!=null) {
+            MessageLab.get(getActivity()).updateMessage(mUserMessage);
+        }
     }
 
     @Override
@@ -104,11 +115,19 @@ public class MessageFragment extends Fragment{
             }
         });
 
+        if (IsFirstNew){
+            MessageLab.get(getActivity()).deleteMessage(mUserMessage);
+        }
+
         return v;
     }
 
     //相应的修改信息
     private void changMessage(){
+        if (IsFirstNew){
+            mUserMessage=new UserMessage(messageId);
+            MessageLab.get(getActivity()).addMessage(mUserMessage);
+        }
         mUserMessage.setPingtai(mPingTai.getText().toString());
         mUserMessage.setUserName(mUserName.getText().toString());
         mUserMessage.setUser(mUser.getText().toString());
