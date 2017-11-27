@@ -30,7 +30,8 @@ public class MessageBaseHelper extends SQLiteOpenHelper {
                 MessageTable.Cols.PASSWORD+"," +
                 MessageTable.Cols.EMAIL+"," +
                 MessageTable.Cols.PHONE+"," +
-                MessageTable.Cols.DATE+
+                MessageTable.Cols.DATE+"," +
+                MessageTable.Cols.TYPE+
                 ")");
     }
 

@@ -19,6 +19,7 @@ public class MessageDbSchema {
             public static final String PASSWORD="password"; //密码
             public static final String EMAIL="email";       //邮箱
             public static final String PHONE="phone";       //手机
+            public static final String TYPE="type";         //类型
         }
     }
 }

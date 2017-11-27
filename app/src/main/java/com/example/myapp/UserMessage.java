@@ -13,6 +13,9 @@ import java.util.UUID;
  */
 
 public class UserMessage {
+    public static final int TYPE_OF_USUALLY=0;
+    public static final int TYPE_OF_PHONE=1;
+    public static final int TYPE_OF_EMAIL=2;
 
     private UUID mId;       //每一个对象的唯一标识id
     private String mPingtai="";    //用户所注册的平台
@@ -22,6 +25,7 @@ public class UserMessage {
     private String mEmail="";       //用户绑定的邮箱
     private String mPhone="";       //用户绑定的手机号码
     private String mDate="";        //用户创建的日期
+    private int mType=TYPE_OF_USUALLY;            //账号的类别
 
     public UserMessage(){
         mId=UUID.randomUUID();
@@ -32,7 +36,6 @@ public class UserMessage {
         SimpleDateFormat format=new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
         Date date=new Date(System.currentTimeMillis());
         mDate=format.format(date);
-        Log.d("UserMessage",mDate);
     }
 
     public String getPingtai() {
@@ -93,5 +96,13 @@ public class UserMessage {
 
     public void setDate(String date) {
         mDate = date;
+    }
+
+    public int getType() {
+        return mType;
+    }
+
+    public void setType(int type) {
+        mType = type;
     }
 }

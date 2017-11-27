@@ -1,19 +1,24 @@
 package com.example.myapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -27,8 +32,6 @@ public class ListViewFragment extends Fragment{
 
     private RecyclerView mMessageRecyclerView;      //列表视图
     private MessageAdapter mAdapter;                //列表的适配器
-
-    private int mItemPosition=0;       //实现定点刷新
 
     //使用单例模式创建Fragment
     public static ListViewFragment newInstance(){
@@ -70,10 +73,7 @@ public class ListViewFragment extends Fragment{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_new_message:
-                UserMessage message=new UserMessage();
-                MessageLab.get(getActivity()).addMessage(message);
-                Intent intent=MessageActivity.newIntent(getActivity(),message.getId(),true);
-                startActivity(intent);
+                createAlertDialog().show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -99,7 +99,7 @@ public class ListViewFragment extends Fragment{
             mMessageRecyclerView.setAdapter(mAdapter);      //为列表设置适配器
         }else{
             mAdapter.setMessages(messages);
-            mAdapter.notifyItemChanged(mItemPosition);
+            mAdapter.notifyDataSetChanged();
         }
 
         showSubtitle();
@@ -112,31 +112,38 @@ public class ListViewFragment extends Fragment{
 
         private UserMessage mUserMessage;
 
-        private int mPosition;
-
         private TextView mPingTaiTextView;
         private TextView mUserNameTextView;
+        private ImageView mMessageType;
 
         public MessageHolder(View itemView) {
             super(itemView);
             mPingTaiTextView=itemView.findViewById(R.id.message_pingtai);
             mUserNameTextView=itemView.findViewById(R.id.message_user_name);
+            mMessageType=itemView.findViewById(R.id.message_image_view);
 
             itemView.setOnClickListener(this);
         }
 
-        public void bindMessage(UserMessage message,int position){
+        public void bindMessage(UserMessage message){
             mUserMessage=message;
-            mPosition=position;
             mPingTaiTextView.setText(mUserMessage.getPingtai());
             mUserNameTextView.setText(mUserMessage.getUserName());
+            if (message.getType()==UserMessage.TYPE_OF_EMAIL){      //根据类型不同，设置图片
+                mMessageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_dialog_email,null));
+                mMessageType.setBackground(getResources().getDrawable(R.drawable.ic_dialog_email_background,null));
+            }else if (message.getType()==UserMessage.TYPE_OF_PHONE){
+                mMessageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_dialog_phone,null));
+                mMessageType.setBackground(getResources().getDrawable(R.drawable.ic_launcher_background,null));
+            }else{
+                mMessageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_dialog_usually,null));
+                mMessageType.setBackground(getResources().getDrawable(R.drawable.ic_dialog_usually_background,null));
+            }
         }
 
         @Override
         public void onClick(View view) {
-            // TODO: 2017/11/26 当点击时，用户可选择三种情况进行填写，手机号码就是账号，或者邮箱就是账号，或者两种情况都不是
-            Intent intent=MessageActivity.newIntent(getActivity(),mUserMessage.getId(),false);
-            mItemPosition=mPosition;
+            Intent intent=MessageActivity.newIntent(getActivity(),mUserMessage.getId(),false,mUserMessage.getType());
             startActivity(intent);
         }
     }
@@ -150,10 +157,7 @@ public class ListViewFragment extends Fragment{
 
         @Override
         public void onClick(View view) {
-            UserMessage message=new UserMessage();
-            MessageLab.get(getActivity()).addMessage(message);
-            Intent intent=MessageActivity.newIntent(getActivity(),message.getId(),true);
-            startActivity(intent);
+            createAlertDialog().show();
         }
     }
 
@@ -184,7 +188,7 @@ public class ListViewFragment extends Fragment{
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof MessageHolder) {
                 UserMessage message=mMessages.get(position);
-                ((MessageHolder) holder).bindMessage(message,position);
+                ((MessageHolder) holder).bindMessage(message);
             }
         }
 
@@ -204,5 +208,52 @@ public class ListViewFragment extends Fragment{
         public void setMessages(List<UserMessage> messages){
             mMessages=messages;
         }
+    }
+
+    private AlertDialog createAlertDialog(){
+        final UserMessage message=new UserMessage();
+        DialogInterface.OnKeyListener keyListener=new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                if (i==KeyEvent.KEYCODE_BACK&&keyEvent.getRepeatCount()==0){
+                    return true;
+                }
+                return false;
+            }
+        };
+        AlertDialog dialog=new AlertDialog.Builder(getActivity())
+                .setTitle("选择三种存储方式")
+                .setView(R.layout.dialog_view)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setOnKeyListener(keyListener).setCancelable(false)
+                .setNegativeButton("手机及账号", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setMessageType(message,UserMessage.TYPE_OF_PHONE);
+                        Log.d("AlertDialog","type:"+message.getType());
+                    }
+                })
+                .setNeutralButton("账号自定义", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setMessageType(message,UserMessage.TYPE_OF_USUALLY);
+                    }
+                })
+                .setPositiveButton("邮箱及账号", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setMessageType(message,UserMessage.TYPE_OF_EMAIL);
+                    }
+                })
+                .create();
+
+        return dialog;
+    }
+    //设置message的type
+    private void setMessageType(UserMessage message,int type){
+        message.setType(type);
+        MessageLab.get(getActivity()).addMessage(message);
+        Intent intent=MessageActivity.newIntent(getActivity(),message.getId(),true,type);
+        startActivity(intent);
     }
 }

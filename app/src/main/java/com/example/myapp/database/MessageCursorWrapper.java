@@ -27,6 +27,7 @@ public class MessageCursorWrapper extends CursorWrapper {
         String email=getString(getColumnIndex(MessageTable.Cols.EMAIL));
         String phone=getString(getColumnIndex(MessageTable.Cols.PHONE));
         String date=getString(getColumnIndex(MessageTable.Cols.DATE));
+        int type=getInt(getColumnIndex(MessageTable.Cols.TYPE));
 
         UserMessage message=new UserMessage(UUID.fromString(uuidString));
         message.setPingtai(pingtai);
@@ -36,6 +37,7 @@ public class MessageCursorWrapper extends CursorWrapper {
         message.setEmail(email);
         message.setPhone(phone);
         message.setDate(date);
+        message.setType(type);
 
         return message;
     }

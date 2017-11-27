@@ -97,6 +97,7 @@ public class MessageLab {
         values.put(MessageTable.Cols.EMAIL,userMessage.getEmail());
         values.put(MessageTable.Cols.PHONE,userMessage.getPhone());
         values.put(MessageTable.Cols.DATE,userMessage.getDate());
+        values.put(MessageTable.Cols.TYPE,userMessage.getType());
 
         return values;
     }

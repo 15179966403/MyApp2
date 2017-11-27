@@ -30,10 +30,12 @@ public class MessageFragment extends Fragment{
 
     private static final String ARG_MESSAGE_ID="message_id";
     private static final String ARG_MESSAGE_IS_NEW="message_is_new";
+    private static final String ARG_MESSAGE_TYPE="message_type";
 
     private UserMessage mUserMessage;
     private UUID messageId;
     private boolean IsFirstNew;     //是否是第一次创建
+    private int mType;              //信息类型
 
     private EditText mPingTai;
     private EditText mUserName;
@@ -48,10 +50,11 @@ public class MessageFragment extends Fragment{
 
     private Button okButton;
 
-    public static MessageFragment newInstance(UUID messageId,boolean isFirstNew){
+    public static MessageFragment newInstance(UUID messageId,boolean isFirstNew,@Nullable int messageType){
         Bundle args=new Bundle();
         args.putSerializable(ARG_MESSAGE_ID,messageId);
         args.putSerializable(ARG_MESSAGE_IS_NEW,isFirstNew);
+        args.putSerializable(ARG_MESSAGE_TYPE,messageType);
 
         MessageFragment fragment=new MessageFragment();
         fragment.setArguments(args);
@@ -64,8 +67,8 @@ public class MessageFragment extends Fragment{
         super.onCreate(savedInstanceState);
         messageId=(UUID)getArguments().getSerializable(ARG_MESSAGE_ID);
         IsFirstNew= (boolean) getArguments().getSerializable(ARG_MESSAGE_IS_NEW);
-        Log.d(TAG,"isFirstNew :"+IsFirstNew);
         mUserMessage=MessageLab.get(getActivity()).getMessage(messageId);
+        mType=mUserMessage.getType();
         setHasOptionsMenu(true);
     }
 
@@ -120,6 +123,7 @@ public class MessageFragment extends Fragment{
     private void changMessage(){
         if (IsFirstNew){
             mUserMessage=new UserMessage(messageId);
+            mUserMessage.setType(mType);
             MessageLab.get(getActivity()).addMessage(mUserMessage);
         }
         mUserMessage.setPingtai(mPingTai.getText().toString());
@@ -232,6 +236,33 @@ public class MessageFragment extends Fragment{
             setImageViewDrawable(mIVPhone,isPhone(mUserMessage.getPhone()));
             setImageViewDrawable(mIVPassword,!hasChinese(mUserMessage.getPassword()));
         }
+
+        if (mType==UserMessage.TYPE_OF_PHONE){
+            mPhone.setEnabled(false);
+        }else if (mType==UserMessage.TYPE_OF_EMAIL){
+            mEmail.setEnabled(false);
+        }
+
+        mUser.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (mType==UserMessage.TYPE_OF_PHONE){
+                    mPhone.setText(charSequence.toString());
+                }else if (mType==UserMessage.TYPE_OF_EMAIL){
+                    mEmail.setText(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         mEmail.addTextChangedListener(new TextWatcher() {
             @Override
